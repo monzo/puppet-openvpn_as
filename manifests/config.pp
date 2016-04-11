@@ -27,6 +27,18 @@ class openvpn_as::config(
     $openvpn_log_db       = 'sqlite:///~/db/log.db'
   }
 
+  # This is used to "loop" over $admin_users:
+  define mark_admin_users {
+    $admin_user = $name
+    notify { "Admin VPN user: $admin_user":; }
+
+    # Use the sacli command to mark this user as an admin:
+    exec { "openvpn-admin-user-${admin_user}":
+      command => "/usr/local/openvpn_as/scripts/sacli --user '${admin_user}' --key prop_superuser --value true UserPropPut && touch /tmp/openvpn.admin_user.${admin_user}",
+      creates => "/tmp/openvpn.admin_user.${admin_user}",
+    }
+  }
+
   # OpenVPN-AS config file:
   file { '/usr/local/openvpn_as/etc/as.conf':
     content => template('openvpn_as/as.conf.erb'),
@@ -107,20 +119,9 @@ class openvpn_as::config(
   }
 
   # Mark users as being "admin" users (for loop please):
-  $admin_user_0 = $admin_users[0]
-  exec { "openvpn-admin-user-${admin_user_0}":
-    command => "/usr/local/openvpn_as/scripts/sacli --user '${admin_user_0}' --key prop_superuser --value true UserPropPut && touch /tmp/openvpn.admin_user.${admin_user_0}",
-    creates => "/tmp/openvpn.admin_user.${admin_user_0}",
-  }
+  mark_admin_users { $admin_users:; }
 
-  # Mark users as being "admin" users (for loop please):
-  $admin_user_1 = $admin_users[1]
-  exec { "openvpn-admin-user-${admin_user_1}":
-    command => "/usr/local/openvpn_as/scripts/sacli --user '${admin_user_1}' --key prop_superuser --value true UserPropPut && touch /tmp/openvpn.admin_user.${admin_user_1}",
-    creates => "/tmp/openvpn.admin_user.${admin_user_1}",
-  }
-
-  # Meaningless file used to trigger a service-restart:
+  # Meaningless file used to trigger a service-restart if any of these options are modified:
   file { '/usr/local/openvpn_as/etc/cruft.cft':
     content => template('openvpn_as/all-config-vars.erb'),
     owner   => root,
