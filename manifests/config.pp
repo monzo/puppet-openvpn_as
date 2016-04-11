@@ -57,7 +57,7 @@ class openvpn_as::config(
 
   # Enable OpenVPN-Connect clients to have multiple profiles:
   file { '/usr/local/openvpn_as/openvpn.vpn.client.basic':
-    content => $vpn_client_basic,
+    content => "${vpn_client_basic}",
   } ~>
   exec { 'openvpn-vpn-client-basic':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.client.basic -v '${vpn_client_basic}' && touch /tmp/openvpn.vpn.client.basic",
@@ -66,7 +66,7 @@ class openvpn_as::config(
 
   # Configure OpenVPN to know the internal network address of the VPC:
   file { '/usr/local/openvpn_as/openvpn.vpn.server.routing.private_network.0':
-    content => $vpn_server_routing_private_network_0,
+    content => "${vpn_server_routing_private_network_0}",
   } ~>
   exec { 'openvpn-vpn-server-routing-private-network-0':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.server.routing.private_network.0 -v '${vpn_server_routing_private_network_0}' && touch /tmp/openvpn.vpn.server.routing.private_network.0",
@@ -75,7 +75,7 @@ class openvpn_as::config(
 
   # Configure OpenVPN to use a specific address-range for clients:
   file { '/usr/local/openvpn_as/openvpn.vpn.daemon.0.client.network':
-    content => $vpn_daemon_0_client_network,
+    content => "${vpn_daemon_0_client_network}",
   } ~>
   exec { 'openvpn-vpn-daemon-0-client-network':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.daemon.0.client.network -v '${vpn_daemon_0_client_network}' && touch /tmp/openvpn.vpn.daemon.0.client.network",
@@ -84,7 +84,7 @@ class openvpn_as::config(
 
   # Tell OpenVPN not to change clients DNS resolver settings:
   file { '/usr/local/openvpn_as/openvpn.vpn.client.routing.reroute_dns':
-    content => $vpn_client_routing_reroute_dns,
+    content => "${vpn_client_routing_reroute_dns}",
   } ~>
   exec { 'openvpn-vpn-client-routing-reroute-dns':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.client.routing.reroute_dns -v '${vpn_client_routing_reroute_dns}' && touch /tmp/openvpn.vpn.client.routing.reroute_dns",
@@ -93,7 +93,7 @@ class openvpn_as::config(
 
   # Tell OpenVPN not to route clients internet-traffic over the VPN:
   file { '/usr/local/openvpn_as/openvpn.vpn.client.routing.reroute_gw':
-    content => $vpn_client_routing_reroute_gw,
+    content => "${vpn_client_routing_reroute_gw}",
   } ~>
   exec { 'openvpn-vpn-client-routing-reroute-gw':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.client.routing.reroute_gw -v '${vpn_client_routing_reroute_gw}' && touch /tmp/openvpn.vpn.client.routing.reroute_gw",
@@ -102,7 +102,7 @@ class openvpn_as::config(
 
   # Tell OpenVPN to force clients to use a Google-Authenticator token:
   file { '/usr/local/openvpn_as/openvpn.vpn.server.google_auth.enable':
-    content => $vpn_server_google_auth_enable,
+    content => "${vpn_server_google_auth_enable}",
   } ~>
   exec { 'openvpn-vpn-server-google-auth-enable':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.server.google_auth.enable -v '${vpn_server_google_auth_enable}' && touch /tmp/openvpn.vpn.server.google_auth.enable",
@@ -111,7 +111,7 @@ class openvpn_as::config(
 
   # Tell OpenVPN what our external host-name is:
   file { '/usr/local/openvpn_as/openvpn.host.name':
-    content => $host_name,
+    content => "${host_name}",
   } ~>
   exec { 'openvpn-host-name':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk host.name -v '${host_name}' && touch /tmp/openvpn.host.name",
@@ -119,7 +119,7 @@ class openvpn_as::config(
   }
 
   # Mark users as being "admin" users (for loop please):
-  mark_admin_users { $admin_users:; }
+  openvpn_as::config::mark_admin_users { $admin_users:; }
 
   # Meaningless file used to trigger a service-restart if any of these options are modified:
   file { '/usr/local/openvpn_as/etc/cruft.cft':
