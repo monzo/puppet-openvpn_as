@@ -1,9 +1,9 @@
 # == Class: openvpn_as::config
 #
 class openvpn_as::config(
-  $openvpn_mysql_username               = $openvpn_as::openvpn_mysql_username,
-  $openvpn_mysql_password               = $openvpn_as::openvpn_mysql_password,
-  $openvpn_mysql_host                   = $openvpn_as::openvpn_mysql_host,
+  $mysql_username                       = $openvpn_as::mysql_username,
+  $mysql_password                       = $openvpn_as::mysql_password,
+  $mysql_host                           = $openvpn_as::mysql_host,
   $vpn_daemon_0_client_network          = $openvpn_as::vpn_daemon_0_client_network,
   $vpn_client_basic                     = $openvpn_as::vpn_client_basic,
   $vpn_server_routing_private_network_0 = $openvpn_as::vpn_server_routing_private_network_0,
