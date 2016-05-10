@@ -30,7 +30,6 @@ class openvpn_as::config(
   # This is used to "loop" over $admin_users:
   define mark_admin_users {
     $admin_user = $name
-    notify { "Admin VPN user: $admin_user":; }
 
     # Use the sacli command to mark this user as an admin:
     exec { "openvpn-admin-user-${admin_user}":
