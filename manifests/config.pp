@@ -4,14 +4,18 @@ class openvpn_as::config(
   $mysql_username                       = $openvpn_as::mysql_username,
   $mysql_password                       = $openvpn_as::mysql_password,
   $mysql_host                           = $openvpn_as::mysql_host,
-  $vpn_daemon_0_client_network          = $openvpn_as::vpn_daemon_0_client_network,
+  $admin_ui_https_port                  = $openvpn_as::admin_ui_https_port,
+  $admin_users                          = $openvpn_as::admin_users,
+  $cs_https_port                        = $openvpn_as::cs_https_port,
+  $host_name                            = $openvpn_as::host_name,
+  $use_custom_port_config               = $openvpn_as::use_custom_port_config,
   $vpn_client_basic                     = $openvpn_as::vpn_client_basic,
-  $vpn_server_routing_private_network_0 = $openvpn_as::vpn_server_routing_private_network_0,
   $vpn_client_routing_reroute_dns       = $openvpn_as::vpn_client_routing_reroute_dns,
   $vpn_client_routing_reroute_gw        = $openvpn_as::vpn_client_routing_reroute_gw,
+  $vpn_daemon_0_client_network          = $openvpn_as::vpn_daemon_0_client_network,
   $vpn_server_google_auth_enable        = $openvpn_as::vpn_server_google_auth_enable,
-  $host_name                            = $openvpn_as::host_name,
-  $admin_users                          = $openvpn_as::admin_users,
+  $vpn_server_port_share_service        = $openvpn_as::vpn_server_port_share_service,
+  $vpn_server_routing_private_network_0 = $openvpn_as::vpn_server_routing_private_network_0,
 ) {
 
   # Prepapre the database paths (MySQL or SQLite):
@@ -115,6 +119,37 @@ class openvpn_as::config(
   exec { 'openvpn-host-name':
     command     => "/usr/local/openvpn_as/scripts/confdba -mk host.name -v '${host_name}' && touch /tmp/openvpn.host.name",
     refreshonly => true,
+  }
+
+  # Optionally override the default port config:
+  if $use_custom_port_config {
+
+    # Tell OpenVPN that we'll use a custom port-config:
+    file { '/usr/local/openvpn_as/openvpn.vpn.server.port_share.service':
+      content => "${vpn_server_port_share_service}",
+    } ~>
+    exec {'openvpn-vpn-server-port-share-service':
+      command     => "/usr/local/openvpn_as/scripts/confdba -mk vpn.server.port_share.service -v '${vpn_server_port_share_service}' && touch /tmp/openvpn.vpn.server.port_share.service",
+      refreshonly => true,
+    }
+
+    # Tell OpenVPN what the client-facing HTTPS port is:
+    file { '/usr/local/openvpn_as/openvpn.cs.https.port':
+      content => "${cs_https_port}",
+    } ~>
+    exec {'openvpn-cs-https-port':
+      command     => "/usr/local/openvpn_as/scripts/confdba -mk cs.https.port -v '${cs_https_port}' && touch /tmp/openvpn.cs.https.port",
+      refreshonly => true,
+    }
+
+    # Tell OpenVPN what the admin-UI HTTPS port is:
+    file { '/usr/local/openvpn_as/openvpn.admin_ui.https.port':
+      content => "${admin_ui_https_port}",
+    } ~>
+    exec {'openvpn-admin-ui-https-port':
+      command     => "/usr/local/openvpn_as/scripts/confdba -mk admin_ui.https.port -v '${admin_ui_https_port}' && touch /tmp/openvpn.admin_ui.https.port",
+      refreshonly => true,
+    }
   }
 
   # Mark users as being "admin" users (for loop please):
