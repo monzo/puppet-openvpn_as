@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-MYSQL_USER='<%= @openvpn_mysql_username %>'
-MYSQL_PASS='<%= @openvpn_mysql_password %>'
-MYSQL_HOST='<%= @openvpn_mysql_host %>'
+MYSQL_USER='<%= @mysql_username %>'
+MYSQL_PASS='<%= @mysql_password %>'
+MYSQL_HOST='<%= @mysql_host %>'
 
 echo "/usr/local/openvpn_as/scripts/dbcvt -t certs -s sqlite:////usr/local/openvpn_as/etc/db/certs.db -d 'mysql://${MYSQL_USER}:${MYSQL_PASS}@${MYSQL_HOST}/as_certs'"
 echo "/usr/local/openvpn_as/scripts/dbcvt -t config -s sqlite:////usr/local/openvpn_as/etc/db/config.db -d 'mysql://${MYSQL_USER}:${MYSQL_PASS}@${MYSQL_HOST}/as_config'"
