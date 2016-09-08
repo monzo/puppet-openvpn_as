@@ -20,10 +20,10 @@ class openvpn_as::config(
 
   # Prepapre the database paths (MySQL or SQLite):
   if $openvpn_as::use_mysql {
-    $openvpn_certs_db     = "mysql://${openvpn_mysql_username}:${openvpn_mysql_password}@${openvpn_mysql_host}/as_certs"
-    $openvpn_user_prop_db = "mysql://${openvpn_mysql_username}:${openvpn_mysql_password}@${openvpn_mysql_host}/as_userprop"
-    $openvpn_config_db    = "mysql://${openvpn_mysql_username}:${openvpn_mysql_password}@${openvpn_mysql_host}/as_config"
-    $openvpn_log_db       = "mysql://${openvpn_mysql_username}:${openvpn_mysql_password}@${openvpn_mysql_host}/as_log"
+    $openvpn_certs_db     = "mysql://${mysql_username}:${mysql_password}@${mysql_host}/as_certs"
+    $openvpn_user_prop_db = "mysql://${mysql_username}:${mysql_password}@${mysql_host}/as_userprop"
+    $openvpn_config_db    = "mysql://${mysql_username}:${mysql_password}@${mysql_host}/as_config"
+    $openvpn_log_db       = "mysql://${mysql_username}:${mysql_password}@${mysql_host}/as_log"
   } else {
     $openvpn_certs_db     = 'sqlite:///~/db/certs.db'
     $openvpn_user_prop_db = 'sqlite:///~/db/userprop.db'
