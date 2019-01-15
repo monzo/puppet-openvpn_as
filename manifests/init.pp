@@ -3,6 +3,7 @@
 class openvpn_as (
   $package_version                      = 'latest',
   $service_ensure                       = 'running',
+  $service_refresh                      = true,
   $use_mysql                            = false,
   $mysql_username                       = 'openvpn',
   $mysql_password                       = 'defaultpassword',
@@ -21,9 +22,16 @@ class openvpn_as (
   $admin_users                          = [],
 ) {
 
-  class { 'openvpn_as::package': } ~>
-  class { 'openvpn_as::config': } ~>
-  class { 'openvpn_as::service': } ~>
-  Class['openvpn_as']
+  if $service_refresh {
+    class { 'openvpn_as::package': } ~>
+    class { 'openvpn_as::config': } ~>
+    class { 'openvpn_as::service': } ~>
+    Class['openvpn_as']
+  } else {
+    class { 'openvpn_as::package': } ~>
+    class { 'openvpn_as::config': } ->
+    class { 'openvpn_as::service': } ->
+    Class['openvpn_as']
+  }
 
 }
