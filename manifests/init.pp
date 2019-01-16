@@ -22,6 +22,8 @@ class openvpn_as (
   $admin_users                          = [],
 ) {
 
+  # Note the difference between `->` which is "required by", and 
+  # `~>` which is "notifies"
   if $service_refresh {
     class { 'openvpn_as::package': } ~>
     class { 'openvpn_as::config': } ~>
